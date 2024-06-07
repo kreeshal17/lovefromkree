@@ -2,16 +2,45 @@
 <html lang="en">
 
 <head>
-    <title id="titleWeb"></title>
-    <!-- Required meta tags -->
+    <title id="titleWeb">Confession Website</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/spinload.css">
-    <link rel="stylesheet" type="text/css" href=" https://fonts.googleapis.com/css?family=Pacifico" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Pacifico" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Custom CSS for photo animation -->
+    <style>
+        .photo-page {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: none;
+            /* Initially hidden */
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .photo-container {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+        }
+
+        .photo {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            transform-origin: center;
+        }
+    </style>
 </head>
 
 <body onload="loadSound()">
@@ -32,25 +61,221 @@
                 <h2 id="title"></h2>
                 <h4 id="desc"></h4>
             </header>
-            <button id="yes" type="button" class="btn btn-danger btn-lg"> </button>
+            <button id="yes" type="button" class="btn btn-danger btn-lg"></button>
             <button id="no" type="button" class="btn btn-info btn-lg"></button>
         </div>
     </div>
+
+    <!-- Photo page -->
+    <div class="photo-page">
+        <div class="photo-container">
+            <!-- Photos will be dynamically added here -->
+        </div>
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+        </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="./config.js"></script>
     <script src="./js/main.js"></script>
-
+    <script src="./js/photo-animation.js"></script>
     <script>
         function loadSound() {
             var audio = new Audio('sound/sound.mp3');
             audio.play();
         }
-    </script>
+
+        $(document).ready(function () {
+            // Existing functionality
+            setTimeout(function () {
+                firstQuestion();
+                $('.spinner').fadeOut();
+                $('#preloader').delay(350).fadeOut('slow');
+                $('body').delay(350).css({
+                    'overflow': 'visible'
+                });
+            }, 600);
+
+            init();
+
+            var n = 0;
+            $('#no').mousemove(function () {
+                if (Math.random() < 0.5 || n == 1)
+                    switchButton();
+                else
+                    moveButton();
+                n++;
+            });
+            $('#no').click(() => {
+                if (screen.width >= 900)
+                    switchButton();
+            });
+
+            $('#yes').click(function () {
+                var audio = new Audio('sound/tick.mp3');
+                audio.play();
+                Swal.fire({
+                    title: CONFIG.question,
+                    html: true,
+                    width: 900,
+                    padding: '3em',
+                    html: "<input type='text' class='form-control' id='txtReason' oninput='textGenerate()' placeholder='Whyyy'>",
+                    background: '#fff url(\"img/iput-bg.jpg\")',
+                    backdrop: `
+                          rgba(0,0,123,0.4)
+                          url("img/giphy2.gif")
+                          left top
+                          no-repeat
+                        `,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonColor: '#fe8a71',
+                    confirmButtonText: CONFIG.btnReply
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.fire({
+                            width: 900,
+                            confirmButtonText: CONFIG.btnAccept,
+                            background: '#fff url("img/iput-bg.jpg")',
+                            title: CONFIG.mess,
+                            text: CONFIG.messDesc,
+                            confirmButtonColor: '#83d0c9',
+                            onClose: () => {
+                                // Show photo animation page
+                                $('.wrapper').hide();
+                                $('.photo-page').show();
+                                initPhotoAnimation();
+
+                                // Redirect to newpage.html
+                                window.location.href = 'newpage.html';
+                            }
+                        })
+                    }
+                })
+            });
+
+            function initPhotoAnimation() {
+                const photoContainer = $('.photo-container');
+                const numPhotos = 14;
+
+                for (let i = 0; i < numPhotos; i++) {
+                    const angle = (360 / numPhotos) * i;
+                    const photo = $('<img>').attr('src', `img/photo_${i + 1}.jpg`).addClass('photo');
+                    photoContainer.append(photo);
+
+                    // Set initial position
+                    const initialX = Math.cos((angle * Math.PI) / 180) * 150 + 150; // Adjust values as needed
+                    const initialY = Math.sin((angle * Math.PI) / 180) * 150 + 150; // Adjust values as needed
+                    photo.css({
+                        'left': initialX + 'px',
+                        'top': initialY + 'px'
+                    });
+
+// Animate rotation
+animatePhoto(photo, angle);
+}
+
+function animatePhoto(photo, startAngle) {
+$({ angle: startAngle }).animate({ angle: startAngle + 360 }, {
+    duration: 8000 * (Math.random() + 1),
+    easing: 'linear',
+    step: function (now) {
+        const x = Math.cos((now * Math.PI) / 180) * 150 + 150; // Adjust values as needed
+        const y = Math.sin((now * Math.PI) / 180) * 150 + 150; // Adjust values as needed
+        photo.css({
+            'left': x + 'px',
+            'top': y + 'px'
+        });
+    },
+    complete: function () {
+        animatePhoto(photo, startAngle + 360);
+    }
+});
+}
+}
+});
+
+function init() {
+document.getElementById('titleWeb').innerHTML = CONFIG.titleWeb
+$('#title').text(CONFIG.title)
+$('#desc').text(CONFIG.desc)
+$('#yes').text(CONFIG.btnYes)
+$('#no').text(CONFIG.btnNo)
+
+var xYes = (0.9 * $(window).width() - $('#yes').width() - $('#no').width()) / 2;
+var xNo = xYes + $('#yes').width() + 0.1 * $(window).width();
+var y = 0.75 * $(window).height();
+$('#yes').css("left", xYes);
+$('#yes').css("top", y);
+
+$('#no').css("left", xNo);
+$('#no').css("top", y);
+}
+
+function firstQuestion() {
+$('.content').hide();
+Swal.fire({
+title: CONFIG.introTitle,
+text: CONFIG.introDesc,
+imageUrl: 'img/logi.gif',
+imageWidth: 300,
+imageHeight: 300,
+background: '#fff url("img/iput-bg.jpg")',
+imageAlt: 'Custom image',
+confirmButtonText: CONFIG.btnIntro
+}).then(function () {
+$('.content').show(200);
+var audio = new Audio('sound/sound.mp3');
+audio.play();
+})
+}
+
+// switch button position
+function switchButton() {
+var leftNo = $('#no').css("left");
+var topNO = $('#no').css("top");
+var leftY = $('#yes').css("left");
+var topY = $('#yes').css("top");
+$('#no').css("left", leftY);
+$('#no').css("top", topY);
+$('#yes').css("left", leftNo);
+$('#yes').css("top", topNO);
+}
+
+// move random button position
+function moveButton() {
+var audio = new Audio('sound/duck.mp3');
+audio.play();
+var x = Math.random() * $(window).width() * 0.9;
+var y = Math.random() * $(window).height() * 0.9;
+var left = x + 'px';
+var top = y + 'px';
+$('#no').css("left", left);
+$('#no').css("top", top);
+}
+
+function textGenerate() {
+var text = CONFIG.reply;
+var letters = Array.from(text); // Split the reply message into letters
+var input = $('#txtReason');
+var currentText = input.val().split(''); // Split the current input value into letters
+
+if (currentText.length <= letters.length) {
+input.val(letters.slice(0, currentText.length).join('')); // Append letters to the input field
+} else {
+input.val(letters.join('')); // Complete the input with the full reply message
+}
+}
+</script>
 </body>
 
 </html>
+
+                   

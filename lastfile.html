@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Videos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('beg.jpg');
+            /* Replace with the file path */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            margin: 0 auto;
+            max-width: 1200px;
+            border-radius: 15px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-section,
+        .image-section {
+            margin: 1px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .video-section video,
+        .image-section img {
+            width: 200px;
+            margin: 10px;
+            border: 5px solid #31c1b53b;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-section img {
+            width: 40%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .image-section img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>AAJA HAMRO BHET BHAKO DINA</h1>
+        <div class="video-section">
+            <video id="video1" controls>
+                <source src="Snapchat-1840254927.mp4" video/mp4"> <!-- Replace with the file path -->
+            </video>
+            <video id="video2" controls>
+                <source src="video2.mp4" type="video/mp4"> <!-- Replace with the file path -->
+            </video>
+        </div>
+        <div class="image-section">
+            <img src="lletter1.jpg" alt="Romantic Image 1"> <!-- Replace with the file path -->
+            <img src="lletter2.jpg" alt="Romantic Image 2"> <!-- Replace with the file path -->
+            <img src="photo_1 (2).jpg" alt="Romantic Image 3"> <!-- Replace with the file path -->
+            <img src="justnow.jpg" alt="Romantic Image 4"> <!-- Replace with the file path -->
+        </div>
+    </div>
+</body>
+
+</html>
